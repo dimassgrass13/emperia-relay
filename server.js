@@ -52,6 +52,20 @@ app.get('/health', (req, res) => {
   });
 });
 
+// ── My IP — shows relay server's own IP and GEO ───────────────────────────
+app.get('/myip', async (req, res) => {
+  try {
+    const r = await fetch('https://ip.oxylabs.io/location');
+    const data = await r.json();
+    res.json({ ok: true, relay_ip: data });
+  } catch(e) {
+    // fallback
+    const r2 = await fetch('https://ipapi.co/json/');
+    const data = await r2.json();
+    res.json({ ok: true, relay_ip: data });
+  }
+});
+
 // ── Check endpoint ────────────────────────────────────────────────────────
 app.get('/check', requireSecret, async (req, res) => {
   const { url, geo, device = 'desktop', lang = 'en' } = req.query;
